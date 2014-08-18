@@ -1,7 +1,7 @@
 {
     "name": "larasoft/setting",
     "license": "MIT",
-    "description": "Laravel 4 database driven settings library master",
+    "description": "Laravel 4 library for storing settings in a database",
     "authors": [
         {
             "name": "Rok Grabnar",
