@@ -1,0 +1,23 @@
+{
+    "name": "larasoft/setting",
+    "license": "MIT",
+    "description": "Laravel 4 library for storing settings in a database",
+    "authors": [
+        {
+            "name": "Rok Grabnar",
+            "email": "grabnarrok@gmail.com"
+        }
+    ],
+    "require": {
+        "php": ">=5.3.0"
+    },
+    "autoload": {
+        "classmap": [
+            "src/migrations"
+        ],
+        "psr-0": {
+            "Larasoft\\Setting\\": "src/"
+        }
+    },
+    "minimum-stability": "dev"
+}
