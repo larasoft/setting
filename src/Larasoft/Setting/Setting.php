@@ -13,10 +13,21 @@ namespace Larasoft\Setting;
 
 class Setting {
     
+    /**
+	 * The database table used by the model.
+	 *
+	 * @var Larasoft\Setting\SettingModel
+	 */
 	protected $model;
 
 	protected $cache;
 
+	/**
+	 * Storage for setting values that are
+	 * retrieved from cache or database
+	 *
+	 * @var array
+	 */
 	protected $values = array();
 
 	public function __construct($model, $cache)
@@ -26,6 +37,13 @@ class Setting {
 		$this->cache = $cache;
 	}
 
+	/**
+     * Set a single value or multiple values through array
+     *
+     * @param  mixed  $key
+     * @param  mixed  $value
+     * @return Larasoft\Setting\Setting
+     */
 	public function set($key, $value = null)
 	{
 		if(is_array($key))
@@ -40,11 +58,18 @@ class Setting {
 			$this->setValue($key, $value);
 		}
 
+		// clear cached setting values so cache can
+		// be rebuilded with new values
 		$this->flushCache();
 
 		return $this;
 	}
 
+	/**
+     * Clear\Remove cached values
+     *
+     * @return Larasoft\Setting\Setting
+     */
 	public function flushCache()
 	{
 		$this->cache->forget('setting');
@@ -70,9 +95,9 @@ class Setting {
 	{
 		$query = $this->model->query()->where('key', $key)->first();
 
-		// If value is array then serialize it so we can save it to database
 		$serialized = false;
 
+		// If value is array then serialize it so we can save it to database
 		if(is_array($value))
 		{
 			$value = serialize($value);
@@ -110,6 +135,13 @@ class Setting {
 		}
 	}
 
+	/**
+     * Get setting value
+     *
+     * @param  string  $key
+     * @param  mixed  $default
+     * @return mixed
+     */
 	public function get($key, $default = null)
 	{
 		if(!$this->values)
@@ -136,6 +168,8 @@ class Setting {
 
 	protected function loadValuesFromDatabase()
 	{
+		// if setting values are in cache then retrieve them,
+		// otherwise retrieve them from database table
 		if($this->cache->has('setting'))
 		{
 			$settingValues = $this->cache->get('setting');
