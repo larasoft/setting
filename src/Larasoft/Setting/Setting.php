@@ -168,12 +168,27 @@ class Setting {
 
 	protected function loadValues()
 	{
-		
+		// if setting values are in cache then retrieve them,
+		// otherwise retrieve them from database table
+		if($this->cache->has('setting'))
+		{
+			$this->loadValuesFromCache();
+		}
+		else
+		{
+			$this->loadValuesFromDatabase();
+			
+			// now cache values so we don't everytime to
+			// pull setting values from database
+			$this->cache->forever('setting', $this->values);
+		}
 	}
 
 	protected function loadValuesFromCache()
 	{
-
+		$settingValues = $this->cache->get('setting');
+			
+		$this->values = array_merge($this->values, $settingValues);
 	}
 
 	/**
@@ -182,24 +197,11 @@ class Setting {
      */
 	protected function loadValuesFromDatabase()
 	{
-		// if setting values are in cache then retrieve them,
-		// otherwise retrieve them from database table
-		if($this->cache->has('setting'))
+		$query = $this->model->query();
+			
+		foreach($query->get() as $resultRow)
 		{
-			$settingValues = $this->cache->get('setting');
-			
-			$this->values = array_merge($this->values, $settingValues);
-		}
-		else
-		{
-			$query = $this->model->query();
-			
-			foreach($query->get() as $resultRow)
-			{
-				$this->values[$resultRow->key] = array('value' => $resultRow->value, 'serialized' => $resultRow->serialized);
-			}
-			
-			$this->cache->forever('setting', $this->values);
+			$this->values[$resultRow->key] = array('value' => $resultRow->value, 'serialized' => $resultRow->serialized);
 		}
 	}
 }
