@@ -72,7 +72,10 @@ class Setting {
      */
 	public function flushCache()
 	{
-		$this->cache->forget('setting');
+		if($this->cache)
+		{
+			$this->cache->forget('setting');
+		}
 
 		return $this;
 	}
@@ -170,7 +173,7 @@ class Setting {
 	{
 		// if setting values are in cache then retrieve them,
 		// otherwise retrieve them from database table
-		if($this->cache->has('setting'))
+		if($this->cache AND $this->cache->has('setting'))
 		{
 			$this->loadValuesFromCache();
 		}
@@ -178,10 +181,15 @@ class Setting {
 		{
 			$this->loadValuesFromDatabase();
 			
-			// now cache values so we don't everytime to
-			// pull setting values from database
-			$this->cache->forever('setting', $this->values);
+			if($this->cache)
+			{
+				// now cache values so we don't everytime to
+				// pull setting values from database
+				$this->cache->forever('setting', $this->values);
+			}
 		}
+
+		
 	}
 
 	protected function loadValuesFromCache()
