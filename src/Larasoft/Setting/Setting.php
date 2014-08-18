@@ -166,6 +166,20 @@ class Setting {
 		}
 	}
 
+	protected function loadValues()
+	{
+		
+	}
+
+	protected function loadValuesFromCache()
+	{
+
+	}
+
+	/**
+     * Load setting values from database
+     *
+     */
 	protected function loadValuesFromDatabase()
 	{
 		// if setting values are in cache then retrieve them,
